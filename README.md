@@ -46,7 +46,10 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 ├── scripts
 │   ├── setup.sh  # Script to set up the environment and dependencies
 │   ├── gen_keyStores_and_sign.py  # Main Python script to generate and sign keystores
-│   └── config.yaml  # Configuration file defining key details (keystore paths, CA certificates, etc.)
+├── configs
+│   └── config.yaml  # Configuration file defining key details (stage, keystore paths, CA certificates, etc.)
+├── secrets
+│   └── secrets.yaml  # contains keyStore definitions and private and public key of the CA's
 ├── venv/  # Virtual environment directory (created by setup.sh)
 ├── tmp/  # Temporary directory where keystores and truststores will be generated
 ```
