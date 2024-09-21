@@ -1,8 +1,4 @@
-# Here’s a more detailed and structured guide based on your draft, designed to help users understand and use the script effectively:
-
----
-
-# **Create Java Keystores with Signed Certificates (Offline)**
+# Create Java Keystores with Signed Certificates (Offline)**
 
 This program simplifies the process of creating Java KeyStores with key pairs and signing them with certificates from a Certificate Authority (CA), particularly useful within a Public Key Infrastructure (PKI) IT environment. 
 
