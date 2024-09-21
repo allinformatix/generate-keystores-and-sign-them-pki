@@ -86,7 +86,7 @@ python3 scripts/gen_keyStores_and_sign.py
 ```
 
 The script will:
-- Generate Java KeyStores and TrustStores based on the configuration in `config.yaml`.
+- Generate Java KeyStores and TrustStores based on the configuration in `secrets/secrets.yaml`.
 - Create key pairs and request certificates.
 - Sign the certificates using the specified CA.
 - Store all output files in the `./tmp/` directory.
@@ -102,7 +102,7 @@ ls ./tmp/
 
 ## **Customizing the Configuration**
 
-The configuration for keystores, truststores, and CA certificates is stored in the `config.yaml` file. You can modify this file to adjust the key pair settings, certificate paths, and signing process. Below is a sample structure of `config.yaml`:
+The configuration for keystores, truststores, and CA certificates is stored in the `secrets/secrets.yaml` file. You can modify this file to adjust the key pair settings, certificate paths, and signing process. Below is a sample structure of `secrets/secrets.yaml`:
 
 ```yaml
 java_key_stores:
