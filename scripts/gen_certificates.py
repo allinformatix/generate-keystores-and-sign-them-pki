@@ -10,6 +10,10 @@ def load_config(config_path):
     with open(config_path, 'r') as config_file:
         return yaml.safe_load(config_file)
 
+# Generate the subject alternative names string for OpenSSL
+def generate_san_string(san_list):
+    return ",".join([f"DNS:{san}" for san in san_list])
+
 # Create certificates (NGINX, Apache, or RDP) based on YAML information
 def create_certificates(service_name, cert_info, cert_path, private_key_path, ca_cert, ca_private_key):
     print(f"Creating certificates for {service_name}...")
@@ -21,6 +25,11 @@ def create_certificates(service_name, cert_info, cert_path, private_key_path, ca
     org_name = cert_info['organization_name']
     org_unit = cert_info['organization_dept']
     common_name = cert_info['service_main_name']
+    san_list = cert_info.get('subject_alternative_names', [])
+    keystore_password = cert_info['keystore_password']
+    keyalg = cert_info['keyalg']
+    keysize = cert_info['keysize']
+    sigalg = cert_info['sigalg']
 
     # Generate unique filenames for each certificate and key
     private_key = f"{private_key_path}/{service_name}_{common_name}.key"
@@ -29,14 +38,20 @@ def create_certificates(service_name, cert_info, cert_path, private_key_path, ca
 
     # Generate private key
     subprocess.run([
-        "openssl", "genpkey", "-algorithm", "RSA", "-out", private_key, "-pkeyopt", "rsa_keygen_bits:2048"
+        "openssl", "genpkey", "-algorithm", keyalg, "-out", private_key, f"-pkeyopt", f"{keyalg}_keygen_bits:{keysize}"
     ], check=True)
 
     # Generate CSR using the extracted information
-    subprocess.run([
+    san_string = generate_san_string(san_list) if san_list else None
+    csr_cmd = [
         "openssl", "req", "-new", "-key", private_key, "-out", csr_file, "-subj",
         f"/CN={common_name}/O={org_name}/OU={org_unit}/L={locality}/ST={state}/C={country}"
-    ], check=True)
+    ]
+
+    if san_string:
+        csr_cmd.extend(["-addext", f"subjectAltName={san_string}"])
+
+    subprocess.run(csr_cmd, check=True)
 
     # Write CA certificate and private key to temporary files
     with tempfile.NamedTemporaryFile(delete=False, suffix=".crt") as ca_cert_file, \
